@@ -24,42 +24,33 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-
-
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-    private static final int LOADER_ID = 1;
-    private static final String SEARCH_QUERY_RESULTS = "searchResults";
-    private String gitHubSearchResults;
+    private String searchResults;
     private RecyclerView mRecyclerView;
     private NewsRecyclerViewAdapter mAdapter;
     private ArrayList<NewsItem> news = new ArrayList<>();
+    private static final int LOADER_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
+        //mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
         mAdapter = new NewsRecyclerViewAdapter(this, news);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        if(savedInstanceState != null && savedInstanceState.containsKey(SEARCH_QUERY_RESULTS)){
-            String searchResults = savedInstanceState.getString(SEARCH_QUERY_RESULTS);
-            populateRecyclerView(searchResults);
-        }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_QUERY_RESULTS, gitHubSearchResults);
-
+    public void populateRecyclerView(String searchResults){
+        Log.d("mycode", searchResults);
+        news = JsonUtils.makeList(searchResults);
+        mAdapter.mNews.addAll(news);
+        mAdapter.notifyDataSetChanged();
     }
 
     private URL makeSearchUrl() {
-        URL newsUrl = NetworkUtils.buildUrl();
-        return newsUrl;
+        URL githubSearchUrl = NetworkUtils.buildUrl();
+        return githubSearchUrl;
     }
 
     @Override
@@ -67,39 +58,32 @@ public class MainActivity extends AppCompatActivity {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.action_search) {
             URL url = makeSearchUrl();
-            LoaderManager loaderManager = getSupportLoaderManager();
-            Loader<String> gitHubSearchLoader = loaderManager.getLoader(LOADER_ID);
+//            Bundle bundle = new Bundle();
+//            bundle.putString(SEARCH_QUERY_URL_EXTRA, url.toString());
+//            LoaderManager loaderManager = getSupportLoaderManager();
+//            Loader<String> gitHubSearchLoader = loaderManager.getLoader(LOADER_ID);
+//            if(gitHubSearchLoader == null){
+//                loaderManager.initLoader(LOADER_ID, bundle, this).forceLoad();
+//            }else{
+//                loaderManager.restartLoader(LOADER_ID, bundle, this).forceLoad();
+//            }
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    public void populateRecyclerView(String searchResults){
-        Log.d("mycode", searchResults);
-        news = JsonUtils.makeList(searchResults);
-        mAdapter.mRepos.addAll(news);
-        mAdapter.notifyDataSetChanged();
-    }
-
-
-
-    @Override
-    public static android.support.v4.content.Loader<String> onCreateLoader(int id, final Bundle args) {
+    public android.support.v4.content.Loader<String> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
             @Override
             protected void onStartLoading() {
                 Log.d(TAG, "onStartLoading called");
                 super.onStartLoading();
-                if(args == null) {
+                if(args == null){
                     Log.d(TAG, "bundle null");
                     return;
                 }
+                //mProgressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -107,15 +91,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "loadInBackground called");
                 try {
                     Log.d(TAG, "begin network call");
-                    gitHubSearchResults = NetworkUtils.getResponseFromHttpUrl(newsURL);
+                    searchResults = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, gitHubSearchResults);
-                return gitHubSearchResults;
+                Log.d(TAG, searchResults);
+                return searchResults;
             }
         };
     }
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<String> loader, String data) {
+        Log.d("mycode", data);
+        populateRecyclerView(data);
     }
 
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<String> loader) {}
 }
+
+

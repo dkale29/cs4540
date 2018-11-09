@@ -5,12 +5,16 @@ public class NewsItem {
     private String url;
     private String title;
     private String description;
+    private String image;
+    private String publishDate;
 
-    public NewsItem(String author, String title, String url, String description) {
+    public NewsItem(String author, String title, String url, String description, String image, String publishDate) {
         this.author = author;
         this.title = title;
         this.url = url;
         this.description = description;
+        this.image = image;
+        this.publishDate = publishDate;
     }
 
     public String getAuthor() {
@@ -43,5 +47,21 @@ public class NewsItem {
 
     public void setDescription(String description){
         this.description = description;
+    }
+
+    public String getImage(){
+        return image;
+    }
+
+    public void setImage(String image){
+        this.image = image;
+    }
+
+    public String getPublishDate(){
+        return publishDate;
+    }
+
+    public void setPublishDate(String publishDate){
+        this.publishDate = publishDate;
     }
 }

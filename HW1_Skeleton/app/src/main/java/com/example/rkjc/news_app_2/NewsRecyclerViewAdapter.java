@@ -17,15 +17,15 @@ import java.util.ArrayList;
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder> {
     Context mContext;
-    ArrayList<NewsItem> news;
+    ArrayList<NewsItem> mNews;
 
     public NewsRecyclerViewAdapter(Context context, ArrayList<NewsItem> news){
         this.mContext = context;
-        this.news = news;
+        this.mNews = news;
     }
 
     @Override
-    public NewsRecyclerViewAdapter.NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -42,7 +42,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public int getItemCount() {
-        return news.size();
+        return mNews.size();
     }
 
     public class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -50,29 +50,33 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         TextView url;
         TextView title;
         TextView description;
+        TextView image;
+        TextView publishDate;
 
         public NewsViewHolder(View itemView) {
             super(itemView);
             author = (TextView) itemView.findViewById(R.id.author);
-            url = (TextView) itemView.findViewById(R.id.url);
             title = (TextView) itemView.findViewById(R.id.title);
+            url = (TextView) itemView.findViewById(R.id.url);
             description = (TextView) itemView.findViewById(R.id.description);
+            image = (TextView) itemView.findViewById(R.id.image);
+            publishDate = (TextView) itemView.findViewById(R.id.publishDate)
         }
 
         void bind(final int listIndex) {
-            author.setText(news.get(listIndex).getAuthor());
-            url.setText(news.get(listIndex).getUrl());
-            title.setTitle(news.get(listIndex).getTitle());
-            description.setDescription(news.get(listIndex).getDescription());
+            author.setText(mNews.get(listIndex).getAuthor());
+            url.setText(mNews.get(listIndex).getUrl());
+            title.setTitle(mNews.get(listIndex).getTitle());
+            description.setDescription(mNews.get(listIndex).getDescription());
             itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View view) {
-            String urlString = news.get(getAdapterPosition()).getUrl();
-            Intent intent = new Intent(mContext, WebActivity.class);
-            intent.putExtra("urlString", urlString);
-            mContext.startActivity(intent);
+//        @Override
+//        public void onClick(View view) {
+//            String urlString = mNews.get(getAdapterPosition()).getUrl();
+//            Intent intent = new Intent(mContext, WebActivity.class);
+//            intent.putExtra("urlString", urlString);
+//            mContext.startActivity(intent);
         }
     }
 
