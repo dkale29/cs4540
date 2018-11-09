@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private NewsRecyclerViewAdapter mAdapter;
     private ArrayList<NewsItem> news = new ArrayList<>();
     private static final int LOADER_ID = 1;
+    private static final String TAG = "MainActivity";
+    private static final String SEARCH_QUERY_URL_EXTRA = "searchQuery";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public String loadInBackground() {
                 Log.d(TAG, "loadInBackground called");
+
                 try {
                     Log.d(TAG, "begin network call");
                     searchResults = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
@@ -97,9 +100,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, searchResults);
                 return searchResults;
+
             }
+//                try {
+//                    Log.d(TAG, "begin network call");
+//                    searchResults = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                Log.d(TAG, searchResults);
+//                return searchResults;
         };
-    }
+
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<String> loader, String data) {
         Log.d("mycode", data);

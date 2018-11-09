@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.datafrominternet.R;
+import com.example.rkjc.news_app_2.NewsItem;
 
 import java.util.ArrayList;
 
 
-public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder> {
+public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsHolder> {
     Context mContext;
     ArrayList<NewsItem> mNews;
 
@@ -25,18 +26,18 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     @Override
-    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewsRecyclerViewAdapter.NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(R.layout.item, parent, shouldAttachToParentImmediately);
-        NewsViewHolder viewHolder = new NewsViewHolder(view);
+        View view = inflater.inflate(R.layout.news_item, parent, shouldAttachToParentImmediately);  //potential break with news_item
+        NewsHolder viewHolder = new NewsHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(NewsRecyclerViewAdapter.NewsViewHolder holder, int position) {
+    public void onBindViewHolder(NewsRecyclerViewAdapter.NewsHolder holder, int position) {
         holder.bind(position);
     }
 
@@ -45,38 +46,38 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         return mNews.size();
     }
 
-    public class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView author;
         TextView url;
         TextView title;
         TextView description;
-        TextView image;
-        TextView publishDate;
+        //TextView image;
+       // TextView publishDate;
 
-        public NewsViewHolder(View itemView) {
+        public NewsHolder(View itemView) {
             super(itemView);
             author = (TextView) itemView.findViewById(R.id.author);
             title = (TextView) itemView.findViewById(R.id.title);
             url = (TextView) itemView.findViewById(R.id.url);
-            description = (TextView) itemView.findViewById(R.id.description);
-            image = (TextView) itemView.findViewById(R.id.image);
-            publishDate = (TextView) itemView.findViewById(R.id.publishDate)
+            //description = (TextView) itemView.findViewById(R.id.description);
+            //image = (TextView) itemView.findViewById(R.id.image);
+            //publishDate = (TextView) itemView.findViewById(R.id.publishDate);
         }
 
         void bind(final int listIndex) {
             author.setText(mNews.get(listIndex).getAuthor());
             url.setText(mNews.get(listIndex).getUrl());
-            title.setTitle(mNews.get(listIndex).getTitle());
-            description.setDescription(mNews.get(listIndex).getDescription());
+            title.setText(mNews.get(listIndex).getTitle());
+            //description.setText(mNews.get(listIndex).getDescription());
             itemView.setOnClickListener(this);
         }
 
-//        @Override
-//        public void onClick(View view) {
-//            String urlString = mNews.get(getAdapterPosition()).getUrl();
-//            Intent intent = new Intent(mContext, WebActivity.class);
-//            intent.putExtra("urlString", urlString);
-//            mContext.startActivity(intent);
+        @Override
+        public void onClick(View view) {
+            String urlString = mNews.get(getAdapterPosition()).getUrl();
+            Intent intent = new Intent(mContext, WebActivity.class); //implementation of WebActivity?
+            intent.putExtra("urlString", urlString);
+            mContext.startActivity(intent);
         }
     }
 
